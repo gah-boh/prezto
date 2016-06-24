@@ -30,6 +30,19 @@ export ANDROID_HOME=/usr/local/opt/android-sdk
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
+# autoload node version with nvm if folder has .nvmrc
+autoload -U add-zsh-hook
+load-nvmrc() {
+    if [[ -f .nvmrc && -r .nvmrc ]]; then
+        nvm use
+    elif [[ $(nvm version) != $(nvm version default)  ]]; then
+        echo "Reverting to nvm default version"
+        nvm use default
+    fi
+}
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc
+
 # pyenv
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
